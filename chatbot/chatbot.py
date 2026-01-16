@@ -1,5 +1,6 @@
-import rag_chatbot.llm_client
-from rag_chatbot import llm_client
+import rag.llm_client
+from rag import llm_client
+
 SYSTEM_PROMPT = "Answer the following questions using simple straight forward language. "
 SYSTEM_PROMPT2 = '''SYSTEM: If the answer is not contained in the provided context, respond with:
 "I don’t know based on the given information, do not use information found outside of the system context."'''
@@ -14,7 +15,7 @@ You are a strict RAG assistant.
 
 class ChatBot:
     def __init__(self):
-        self.llm = rag_chatbot.llm_client.get_llm_client()
+        self.llm = rag.llm_client.get_llm_client()
     def ask_question_without_context(self, message: str) -> str:
         return llm_client.generate_response_without_context(self.llm, SYSTEM_PROMPT, message)
     def ask_question_with_context(self, context: str, message: str) -> str:
