@@ -10,7 +10,7 @@ if __name__ == "__main__":
             if not user_input:
                 continue
             response = bot.ask(user_input)
-            print(response["choices"][0]["text"])
+            print(response)
         except KeyboardInterrupt:
             print("\nBye!")
             break

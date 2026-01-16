@@ -1,3 +1,4 @@
+from langchain_core.messages import SystemMessage, HumanMessage
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 
@@ -10,8 +11,6 @@ def get_llm_client():
     if _client is None:
         _client = create_llm(MODEL_PATH, MODEL_FILENAME)
     return _client
-def get_instructions():
-    return "Answer the following questions using simple straight forward language. "
 
 def create_llm(model_name_or_path, model_basename):
     # Using hf_hub_download to download a model from the Hugging Face model hub
@@ -30,31 +29,28 @@ def create_llm(model_name_or_path, model_basename):
     )
     return llm
 
-def generate_llama_response(instruction, question, llm):
-    # Combine user_prompt and system_message to create the prompt
-    prompt = f"""Instructions: \n{instruction}\nQuestion: {question}\nAnswer:\n"""
 
-    # Generate a response from the LLaMA model
-    response = llm(
-        prompt=prompt,
+# Working.
+def generate_llama_response(llm, instruction: str, context: str, question: str) -> str:
+    response = llm.create_chat_completion(
+        messages=[
+            {
+                "role": "system",
+                "content": instruction,
+            },
+            {
+                "role": "system",
+                "content": f"Retrieved context:\n{context}",
+            },
+            {
+                "role": "user",
+                "content": question,
+            },
+        ],
         max_tokens=512,
-        temperature=0,
+        temperature=0.0,
         top_p=0.95,
         repeat_penalty=1.2,
-        top_k=5,
-        stop=['Instructions:', 'Question:', 'Answer:'],
-        echo=False,
-        seed=42,
     )
-    # Extract the sentiment from the response
-    response_text = response
-    return response_text
 
-if __name__ == '__main__':
-    llm = create_llm(MODEL_PATH, MODEL_FILENAME)
-    instructions = "You are a medical assistant chatbot who's job is to help doctors and nurses diagnose medical conditions. :"
-    question1 = "What are the symptoms of Strep Throat. "
-    response = generate_llama_response(
-        instructions, question1, llm)
-    response_text = response["choices"][0]["text"]
-    print(response_text)
+    return response["choices"][0]["message"]["content"].strip()

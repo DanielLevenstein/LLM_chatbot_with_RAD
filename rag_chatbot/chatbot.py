@@ -1,16 +1,12 @@
 import rag_chatbot.llm_client
 from rag_chatbot import llm_client
-from rag_chatbot.llm_client import generate_llama_response
-
+SYSTEM_PROMPT = "Answer the following questions using simple straight forward language. "
 
 class ChatBot:
     def __init__(self):
         self.llm = rag_chatbot.llm_client.get_llm_client()
     def ask(self, message: str) -> str:
-        instructions = llm_client.get_instructions()
-        return generate_llama_response(instructions, message, self.llm)
-
-
+        return llm_client.generate_llama_response(self.llm, SYSTEM_PROMPT, "", message)
 
 if __name__ == '__main__':
     chatbot = ChatBot()
