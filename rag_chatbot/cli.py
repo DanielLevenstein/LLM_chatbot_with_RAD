@@ -9,7 +9,7 @@ if __name__ == "__main__":
                 break
             if not user_input:
                 continue
-            response = bot.ask(user_input)
+            response = bot.ask_question_without_context(user_input)
             print(response)
         except KeyboardInterrupt:
             print("\nBye!")

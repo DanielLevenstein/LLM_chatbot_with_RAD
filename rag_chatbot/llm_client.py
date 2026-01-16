@@ -29,9 +29,28 @@ def create_llm(model_name_or_path, model_basename):
     )
     return llm
 
-
 # Working.
-def generate_llama_response(llm, instruction: str, context: str, question: str) -> str:
+def generate_response_without_context(llm, instruction: str, question: str) -> str:
+    response = llm.create_chat_completion(
+        messages=[
+            {
+                "role": "system",
+                "content": instruction,
+            },
+            {
+                "role": "user",
+                "content": question,
+            },
+        ],
+        max_tokens=512,
+        temperature=0.0,
+        top_p=0.95,
+        repeat_penalty=1.2,
+    )
+
+    return response["choices"][0]["message"]["content"].strip()
+
+def generate_response_with_context(llm, instruction: str, context: str, question: str) -> str:
     response = llm.create_chat_completion(
         messages=[
             {
@@ -52,5 +71,4 @@ def generate_llama_response(llm, instruction: str, context: str, question: str) 
         top_p=0.95,
         repeat_penalty=1.2,
     )
-
     return response["choices"][0]["message"]["content"].strip()
