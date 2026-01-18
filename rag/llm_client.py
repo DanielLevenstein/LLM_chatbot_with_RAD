@@ -1,8 +1,23 @@
 from datetime import datetime
+import pickle
+import faiss
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 from langchain_core.messages import SystemMessage, HumanMessage
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
+
+
+CHUNK_SIZE = 500
+CHUNK_OVERLAP = 50
+
+SENTENCE_TRANSFORMER = "sentence-transformers/all-MiniLM-L6-v2"
+
+INDEX_PATH = "output/index.faiss"
+CHUNKS_PATH = "output/chunks.pkl"
+
+TOP_K = 4
 # Model Options.
 # Qwen3-4B-BF16.gguf, 8.05 GB
 # Qwen3-4B-Q8_0.gguf, 4.28 GB, 53 s
@@ -12,11 +27,26 @@ from huggingface_hub import hf_hub_download
 MODEL_PATH = "unsloth/Qwen3-4B-GGUF"
 MODEL_FILENAME = "Qwen3-4B-Q5_K_M.gguf"
 _client = None
+
+
 def get_llm_client():
     global _client
     if _client is None:
         _client = create_llm(MODEL_PATH, MODEL_FILENAME)
+        load_rag_assets()
     return _client
+
+
+def load_rag_assets():
+    index = faiss.read_index(INDEX_PATH)
+
+    with open(CHUNKS_PATH, "rb") as f:
+        chunks = pickle.load(f)
+
+    model = SentenceTransformer(SENTENCE_TRANSFORMER)
+
+    return index, chunks, model
+
 
 def create_llm(model_name_or_path, model_basename):
     print(f"Creating model: {MODEL_FILENAME}")
@@ -39,6 +69,7 @@ def create_llm(model_name_or_path, model_basename):
     elapsed_time = end_time - start_time
     print(f"{MODEL_FILENAME} creating time: {elapsed_time}")
     return llm
+
 
 # Working.
 def generate_response_without_context(llm, instruction: str, question: str) -> str:
@@ -65,6 +96,7 @@ def generate_response_without_context(llm, instruction: str, question: str) -> s
     print(f"generate_response_without_context -Elapsed time: {elapsed_time}")
     return trim_response(response["choices"][0]["message"]["content"])
 
+
 def generate_response_with_context(llm, instruction: str, context: str, question: str) -> str:
     response = llm.create_chat_completion(
         messages=[
@@ -88,9 +120,58 @@ def generate_response_with_context(llm, instruction: str, context: str, question
     )
     return trim_response(response["choices"][0]["message"]["content"])
 
+
+def generate_response_using_rag(llm, instruction: str, question: str) -> str:
+    index = faiss.read_index(INDEX_PATH)
+    model = SentenceTransformer(SENTENCE_TRANSFORMER)
+    with open(CHUNKS_PATH, "rb") as f:
+        chunks = pickle.load(f)
+    context = retrieve(question, index, chunks, model)
+    response = llm.create_chat_completion(
+        messages=[
+            {
+                "role": "system",
+                "content": instruction,
+            },
+            {
+                "role": "system",
+                "content": f"Retrieved context:\n{context}",
+            },
+            {
+                "role": "user",
+                "content": question,
+            },
+        ],
+        max_tokens=512,
+        temperature=0.0,
+        top_p=0.95,
+        repeat_penalty=1.2,
+    )
+    return trim_response(response["choices"][0]["message"]["content"])
+
+
 def trim_response(response_text):
     marker = "</think>"
     response_text = response_text
     if marker in response_text:
         return response_text.split(marker, 1)[1].lstrip()
     return response_text
+
+
+def retrieve(query: str, index, chunks, model, k=TOP_K):
+    query_embedding = model.encode(query)
+    query_embedding = np.array([query_embedding]).astype("float32")  # shape (1, dim)
+
+    scores, indices = index.search(query_embedding, k)
+
+    retrieved_chunks = [chunks[i] for i in indices[0]]
+    return retrieved_chunks
+
+def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = start + chunk_size
+        chunks.append(text[start:end])
+        start = end - overlap
+    return chunks

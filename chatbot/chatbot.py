@@ -18,18 +18,23 @@ class ChatBot:
         self.llm = rag.llm_client.get_llm_client()
     def ask_question_without_context(self, message: str) -> str:
         return llm_client.generate_response_without_context(self.llm, SYSTEM_PROMPT, message)
+
+    def ask_question_using_rag(self, message: str) -> str:
+        return llm_client.generate_response_using_rag(self.llm, SYSTEM_PROMPT, message)
     def ask_question_with_context(self, context: str, message: str) -> str:
         return llm_client.generate_response_with_context(self.llm, SYSTEM_PROMPT3, context, message)
 
 if __name__ == '__main__':
     chatbot = ChatBot()
-    response = chatbot.ask_question_without_context("What model is this chatbot using?")
-    print(response)
-    response2 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What model is this chatbot using?")
-    print(response2)
-    response3 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What GPU is the model running on?")
-    print(response3)
-    response4 = chatbot.ask_question_with_context("The sky is blue", "What color is the sky?")
-    print(response4)
-    response5 = chatbot.ask_question_with_context("", "What color is the sky?")
-    print(response5)
+    # response = chatbot.ask_question_without_context("What model is this chatbot using?")
+    # print(response)
+    # response2 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What model is this chatbot using?")
+    # print(response2)
+    # response3 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What GPU is the model running on?")
+    # print(response3)
+    # response4 = chatbot.ask_question_with_context("The sky is blue", "What color is the sky?")
+    # print(response4)
+    # response5 = chatbot.ask_question_with_context("", "What color is the sky?")
+    # print(response5)
+    response6 = chatbot.ask_question_using_rag("What are the symptoms of high blood pressure")
+    print(response6)

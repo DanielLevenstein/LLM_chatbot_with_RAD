@@ -1,4 +1,4 @@
-from chatbot.chatbot import ChatBot
+from chatbot import ChatBot
 if __name__ == "__main__":
     bot = ChatBot()
     print("RAG Chatbot (type 'exit' to quit)")
