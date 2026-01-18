@@ -21,15 +21,15 @@ class ChatBot:
     def ask_question_with_context(self, context: str, message: str) -> str:
         return llm_client.generate_response_with_context(self.llm, SYSTEM_PROMPT3, context, message)
 
-# TODO: Update base model because TinyLlama isn't strong enough to implement a true RAG system.
 if __name__ == '__main__':
     chatbot = ChatBot()
     response = chatbot.ask_question_without_context("What model is this chatbot using?")
-    response2 = chatbot.ask_question_with_context("Model is using TinyLlama", "What model is this chatbot using?")
-    response3 = chatbot.ask_question_with_context("Model is using TinyLlama", "What GPU is the model running on?")
-    response4 = chatbot.ask_question_with_context("The sky is blue", "What color is the sky?")
-
     print(response)
+    response2 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What model is this chatbot using?")
     print(response2)
+    response3 = chatbot.ask_question_with_context(f"Model is using {llm_client.MODEL_FILENAME}", "What GPU is the model running on?")
     print(response3)
+    response4 = chatbot.ask_question_with_context("The sky is blue", "What color is the sky?")
     print(response4)
+    response5 = chatbot.ask_question_with_context("", "What color is the sky?")
+    print(response5)
