@@ -1,4 +1,3 @@
-import rag.llm_client
 from rag import llm_client
 
 SYSTEM_PROMPT = "Answer the following questions using simple straight forward language. "
@@ -15,7 +14,7 @@ You are a strict RAG assistant.
 
 class ChatBot:
     def __init__(self):
-        self.llm = rag.llm_client.get_llm_client()
+        self.llm = llm_client.get_llm_client()
     def ask_question_without_context(self, message: str) -> str:
         return llm_client.generate_response_without_context(self.llm, SYSTEM_PROMPT, message)
 

@@ -6,6 +6,7 @@ from llm_client import chunk_text, SENTENCE_TRANSFORMER
 OUTPUT_INDEX_PATH = "output/index.faiss"
 OUTPUT_CHUNKS_PATH = "output/chunks.pkl"
 
+
 if __name__ == '__main__':
     with open("data/blood_pressure_info.txt") as f :
         raw_text = f.read()

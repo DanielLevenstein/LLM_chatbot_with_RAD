@@ -4,7 +4,6 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from langchain_core.messages import SystemMessage, HumanMessage
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
 
