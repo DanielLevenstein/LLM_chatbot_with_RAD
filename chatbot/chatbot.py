@@ -25,6 +25,8 @@ class ChatBot:
     def ask_question_with_context(self, context: str, message: str) -> str:
         print(message)
         return llm_client.generate_response_with_context(self.llm, SYSTEM_PROMPT3, context, message)
+    def close_model(self):
+        self.llm.close()
 
 if __name__ == '__main__':
     chatbot = ChatBot()
@@ -38,7 +40,8 @@ if __name__ == '__main__':
     print(response3)
     response4 = chatbot.ask_question_with_context("The sky is blue", "What color is the sky?")
     print(response4)
-    response5 = chatbot.ask_question_with_context("The sky's of the planet Krypton are a light orange color", "What color is the sky?")
+    print("When context is given model will not use prior knowledge.")
+    response5 = chatbot.ask_question_with_context("", "What is the square root of 2?")
     print(response5)
     print("Asking questions using RAG")
     response6 = chatbot.ask_question_using_rag("What are the symptoms of high blood pressure?")
@@ -47,3 +50,4 @@ if __name__ == '__main__':
     print(response7)
     response8 = chatbot.ask_question_using_rag("What are the best ways to lower blood pressure?")
     print(response8)
+    chatbot.close_model()
