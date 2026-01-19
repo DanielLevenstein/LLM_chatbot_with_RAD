@@ -16,7 +16,9 @@ Required packages include `faiss`, `sentence-transformers`, and `PyPDF2` (for PD
 
 ## Ingest Data
 
-You can ingest documents into the RAG pipeline using one of the ingestion scripts: `rag/ingest_txt.py`, `rag/ingest_pdf.py`
+You can ingest documents into the RAG pipeline the ingestion scripts: `rag/ingest.py`
+
+ingest.py can handle txt or pdf documents
 
 This process will:
 
@@ -44,9 +46,4 @@ After ingestion, you can start querying the RAG system by running the `chatbot/c
 - Make sure the embedding model used during ingestion matches the model used for querying (default: `all-MiniLM-L6-v2`).
 - FAISS indexes and chunks must remain aligned — do not modify the pickled chunks file manually.
 - All scripts have to be run from the root directory of the project.
-- At the moment `ingest_txt.py` and `ingest_pdf.py` write to the same files.
-
-### Future Improvements
-
-- If this were a real system we would implement a system to load more than one file into our RAG at a time.
-- blood_pressure_info.txt, and blood_pressure_PDF.pdf are both stand in files for a companies internal datastore. 
+- blood_pressure_info.txt, and blood_pressure_PDF.pdf are both stand in files for a companies internal datastore.

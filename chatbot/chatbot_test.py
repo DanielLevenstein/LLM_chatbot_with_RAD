@@ -24,5 +24,9 @@ class ChatBotTest(unittest.TestCase):
     def test_context_lookup_negative(self):
         response = self.chatbot.ask_question_with_context(f"", "What model is this chatbot using?")
         self.assertTrue(UNKNOWN_INFO in response, f"The model name isn't included in the context: {response}")
+
+    def test_lookup_using_rag(self):
+        response = self.chatbot.ask_question_using_rag( "What blood pressure levels are considered elevated?")
+        print(response)
 if __name__ == '__main__':
     unittest.main()
