@@ -13,4 +13,5 @@ if __name__ == "__main__":
             print(response)
         except KeyboardInterrupt:
             print("\nBye!")
+            bot.close_model()
             break

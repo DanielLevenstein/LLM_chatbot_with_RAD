@@ -2,6 +2,7 @@ from datetime import datetime
 import pickle
 import faiss
 import numpy as np
+import os
 from sentence_transformers import SentenceTransformer
 
 from llama_cpp import Llama
@@ -37,6 +38,7 @@ def get_llm_client():
 
 
 def load_rag_assets():
+    print("CWD:", os.getcwd())
     index = faiss.read_index(INDEX_PATH)
 
     with open(CHUNKS_PATH, "rb") as f:

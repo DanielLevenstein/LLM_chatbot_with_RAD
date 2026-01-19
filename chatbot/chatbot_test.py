@@ -1,13 +1,16 @@
 import unittest
 
-from chatbot import ChatBot
+from chatbot.chatbot import ChatBot
 from rag import llm_client
 
 UNKNOWN_INFO = "I don’t know based on the given information."
 
 
 class ChatBotTest(unittest.TestCase):
-    chatbot = ChatBot()
+    @classmethod
+    def setUpClass(self):
+        self.chatbot = ChatBot()
+
     def test_model_name(self):
         response = self.chatbot.ask_question_with_context(f"Model is using ${llm_client.MODEL_FILENAME}", "What model is this chatbot using?")
         # We need a method looking for a substring within a larger one. self.assertIn doesn't do that.
