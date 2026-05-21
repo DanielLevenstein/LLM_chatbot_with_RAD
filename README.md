@@ -12,7 +12,7 @@ Make sure your virtual environment is active and install required packages:
 pip install -r requirements.txt
 ```
 
-Required packages include `faiss`, `sentence-transformers`, and `PyPDF2` (for PDF ingestion).
+Required packages include `faiss`, `sentence-transformers`, and `pymupdf` (for PDF ingestion).
 
 ## Ingest Data
 
