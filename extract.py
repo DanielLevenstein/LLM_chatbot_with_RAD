@@ -1,0 +1,119 @@
+import os
+import time
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse, urlunparse
+from collections import deque
+
+FEATURES = [ "ec2", "rds", "s3", "lambda", "iam", "dynamodb", "cli"]
+
+BASE_DOMAIN = "docs.aws.amazon.com"
+SCHEME = "https"
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (DepthCrawler-RAG)"
+}
+
+page_count=0
+
+def normalize_url(url):
+    parsed = urlparse(url)
+    parsed = parsed._replace(fragment="", query="")
+    return urlunparse(parsed)
+
+
+def is_valid(url):
+    return urlparse(url).netloc.endswith(BASE_DOMAIN)
+
+
+def extract_text(html):
+    soup = BeautifulSoup(html, "html.parser")
+
+    for tag in soup(["script", "style", "nav", "footer", "header"]):
+        tag.decompose()
+
+    main = soup.find("main") or soup.body
+    if not main:
+        return ""
+
+    text = main.get_text(separator="\n", strip=True)
+    lines = [l.strip() for l in text.split("\n")]
+    return "\n".join([l for l in lines if l])
+
+
+def extract_links(html, base_url):
+    soup = BeautifulSoup(html, "html.parser")
+    links = []
+
+    for a in soup.find_all("a", href=True):
+        url = normalize_url(urljoin(base_url, a["href"]))
+        if is_valid(url):
+            links.append(url)
+
+    return links
+
+
+def save(path, text, url):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(f"# Source\n{url}\n\n")
+        f.write(text)
+
+
+def crawl(start_url, feature_name, max_depth=2, max_pages=100, delay=0.5, page_count=None):
+    visited = set()
+    queue = deque([(normalize_url(start_url), 0)])
+
+    os.makedirs("data/", exist_ok=True)
+
+    page_id = 0
+
+    while queue and page_id < max_pages:
+        page_count+=1
+        url, depth = queue.popleft()
+
+        if url in visited:
+            continue
+
+        if depth > max_depth:
+            continue
+
+        try:
+            print(f"[depth={depth}] {url}")
+
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            if resp.status_code != 200:
+                continue
+
+            html = resp.text
+            text = extract_text(html)
+
+            visited.add(url)
+
+            if len(text) > 300:
+                url_parts = urlparse(url)
+                print(f"Saving {url_parts}")
+                url_path = url_parts.path.replace("/", "_")
+                path = f"data/{feature_name}{url_path}.md"
+                save(path, text, url)
+                page_id += 1
+
+            if depth <= max_depth:
+                for link in extract_links(html, url):
+                    if link not in visited:
+                        queue.append((link, depth + 1))
+
+            time.sleep(delay)
+
+        except Exception as e:
+            print(f"Error {url}: {e}")
+
+    print(f"Done. Pages saved: {page_count}")
+
+
+def run():
+    for f in FEATURES:
+        crawl(f"{SCHEME}://{BASE_DOMAIN}/{f}", f, max_depth=1, max_pages=80, page_count=page_count)
+
+
+if __name__ == "__main__":
+    run()

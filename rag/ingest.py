@@ -45,7 +45,7 @@ def ingest_folder(data_dir: str):
         print(f"Processing: {filename}")
 
         try:
-            if filename.lower().endswith(".txt"):
+            if filename.lower().endswith(".txt") or filename.lower().endswith(".md"):
                 raw_text = read_txt(path)
 
             elif filename.lower().endswith(".pdf"):
