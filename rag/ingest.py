@@ -1,8 +1,8 @@
 import os
 import pickle
 import faiss
+import fitz  # PyMuPDF
 from sentence_transformers import SentenceTransformer
-from PyPDF2 import PdfReader
 
 from llm_client import chunk_text, SENTENCE_TRANSFORMER
 
@@ -17,12 +17,19 @@ def read_txt(path: str) -> str:
 
 
 def read_pdf(path: str) -> str:
-    reader = PdfReader(path)
     text = []
-    for page in reader.pages:
-        page_text = page.extract_text()
-        if page_text:
-            text.append(page_text)
+    page_count = 0
+    with fitz.open(path) as doc:
+        for page in doc:
+            page_count += 1
+            page_text = page.get_text("text")
+            print("*", end="", flush=True)
+            if page_count % 100 == 0:
+                print("\n", end="", flush=True)
+            if page_text:
+                text.append(page_text)
+
+    print("\nDone reading file:"+ path)
     return "\n".join(text)
 
 
@@ -59,16 +66,17 @@ def ingest_folder(data_dir: str):
 def embed_chunks(chunks):
     model = SentenceTransformer(SENTENCE_TRANSFORMER)
     embeddings = model.encode(chunks, normalize_embeddings=True)
-
+    print("Embeddings Chunks Please be patient.")
     dim = embeddings.shape[1]
     index = faiss.IndexFlatL2(dim)
     index.add(embeddings)
-    faiss.write_index(index, "output/index.faiss")
+    faiss.write_index(index, OUTPUT_INDEX_PATH)
 
-    with open("output/chunks.pkl", "wb") as f:
+    with open(OUTPUT_CHUNKS_PATH, "wb") as f:
         pickle.dump(chunks, f)
 
     print(f"Ingested {len(chunks)} chunks into FAISS index")
+
 
 if __name__ == "__main__":
     os.makedirs("output", exist_ok=True)
@@ -81,4 +89,3 @@ if __name__ == "__main__":
 
     print(f"Total chunks created: {len(chunks)}")
     embed_chunks(chunks)
-

@@ -28,22 +28,19 @@ This process will:
 4. Build a FAISS index
 5. Save the chunks and index in the `output/` folder
 
-## Running CLI app
-
-After ingestion, you can start querying the RAG system by running the `chatbot/cli.py` file. Enter your questions, and the system will:
-
-1. Retrieve relevant chunks from the FAISS index
-2. Build a prompt for the LLM
-3. Return a generated answer based on your documents
-
 ### Output
 
 - `output/index.faiss` – FAISS vector index
 - `output/chunks.pkl` – Pickled text chunks
+
+## Local Testing
+
+After ingestion run the streamlit app using the following command. 
+`streamlit run app.py`
 
 ### Notes
 
 - Make sure the embedding model used during ingestion matches the model used for querying (default: `all-MiniLM-L6-v2`).
 - FAISS indexes and chunks must remain aligned — do not modify the pickled chunks file manually.
 - All scripts have to be run from the root directory of the project.
-- blood_pressure_info.txt, and blood_pressure_PDF.pdf are both stand in files for a companies internal datastore.
+- blood_pressure_PDF.pdf is a stand in file for a companies' internal datastore.

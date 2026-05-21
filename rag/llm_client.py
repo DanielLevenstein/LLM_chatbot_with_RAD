@@ -171,6 +171,7 @@ def retrieve(query: str, index, chunks, model, k=TOP_K):
 def chunk_text(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     chunks = []
     start = 0
+    print(f"Text length: {len(text)}")
     while start < len(text):
         end = start + chunk_size
         chunks.append(text[start:end])
