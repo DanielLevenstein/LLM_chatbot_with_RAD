@@ -26,16 +26,16 @@ This process will:
 2. Chunk the text into manageable pieces
 3. Generate embeddings using the SentenceTransformer model
 4. Build a FAISS index
-5. Save the chunks and index in the `output/` folder
+5. Save the chunks and index in the `index/` folder
 
 ### Output
 
-- `output/index.faiss` – FAISS vector index
-- `output/chunks.pkl` – Pickled text chunks
+- `index/index.faiss` – FAISS vector index
+- `index/chunks.pkl` – Pickled text chunks
 
 ## Local Testing
 
-After ingestion run the streamlit app using the following command. 
+After ingestion run the streamlit app using the following command.
 `streamlit run app.py`
 
 ### Notes

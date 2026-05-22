@@ -5,3 +5,4 @@ huggingface-hub~=0.36.0
 streamlit~=1.56.0
 requests~=2.32.5
 beautifulsoup4~=4.14.3
+llama_cpp-python~=0.3.23
