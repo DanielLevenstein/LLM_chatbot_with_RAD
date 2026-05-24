@@ -116,8 +116,3 @@ This process will:
 - `index/index.faiss` – FAISS vector index
 - `index/chunks.pkl` – Pickled text chunks
 
-## Local Testing
-
-After ingestion run the streamlit app using the following command.
-`streamlit run app.py`
-
