@@ -29,9 +29,17 @@ pip install -r requirements.txt
 My AWS rag includes a local streamlit app for testing. For ease of testing, the `extract.py` and `ingest.py` scripts 
 have been run and the chunks and indexes created have been committed to source control.  
 
-To run the streamlit app run, install the dependencies an run the following command locally. 
+To run the streamlit app run, install the dependencies and run the following command locally. 
 
-```streamlit run app.py```
+```
+pip install -r requirements.txt
+streamlit run app.py```
+```
+Or run through docker.
+```
+docker build --tag aws-rag .
+docker run aws-rag 
+```
 
 ## Example Queries
 
