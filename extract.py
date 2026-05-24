@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, urlunparse
 from collections import deque
 
-FEATURES = [ "ec2", "rds", "s3", "lambda", "iam", "dynamodb", "cli"]
+FEATURES = [ "ec2", "rds", "s3", "lambda", "iam", "dynamodb", "cli", "sagemaker"]
 
 BASE_DOMAIN = "docs.aws.amazon.com"
 SCHEME = "https"
