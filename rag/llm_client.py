@@ -14,8 +14,8 @@ CHUNK_OVERLAP = 50
 
 SENTENCE_TRANSFORMER = "sentence-transformers/all-MiniLM-L6-v2"
 
-INDEX_PATH = "output/index.faiss"
-CHUNKS_PATH = "output/chunks.pkl"
+INDEX_PATH = "index/index.faiss"
+CHUNKS_PATH = "index/chunks.pkl"
 
 TOP_K = 4
 # Model Options.
