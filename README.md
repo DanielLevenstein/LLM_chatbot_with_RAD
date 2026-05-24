@@ -16,6 +16,15 @@ most relevant documentation fragments and uses them as grounded context for resp
 
 ```
 
+
+## 1. Install Dependencies
+
+Make sure your virtual environment is active and install required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Running Locally
 My AWS rag includes a local streamlit app for testing. For ease of testing, the `extract.py` and `ingest.py` scripts 
 have been run and the chunks and indexes created have been committed to source control.  
@@ -86,16 +95,6 @@ This project is currently a proof of concept focused on validating:
 - All scripts have to be run from the root directory of the project.
 
 # Creating New Indexes
-
-## 1. Install Dependencies
-
-Make sure your virtual environment is active and install required packages:
-
-```bash
-pip install -r requirements.txt
-```
-
-Required packages include `faiss`, `sentence-transformers`, and `pymupdf` (for PDF ingestion).
 
 ## Ingest Data
 
