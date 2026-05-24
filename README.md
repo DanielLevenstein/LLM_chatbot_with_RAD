@@ -23,7 +23,9 @@ most relevant documentation fragments and uses them as grounded context for resp
 ## Current AWS Coverage
 
 ```
-[ "ec2", "rds", "s3", "lambda", "iam", "dynamodb", "cli", "sagemaker"]
+["cli", "cloudformation", "cloudwatch", "dynamodb", "elasticloadbalancing",
+            "ec2", "ecs", "eks", "iam", "lambda", "rds", "s3",
+            "sagemaker", "vpc", "xray" ]
 
 ```
 
