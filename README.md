@@ -1,16 +1,3 @@
----
-title: AWS Documentation RAG
-emoji: 🎷
-colorFrom: red
-colorTo: red
-sdk: docker
-app_port: 8501
-tags:
-- streamlit
-pinned: false
-short_description: A simple RAG system that searches AWS documentation
-license: mit
----
 # AWS Documentation RAG Assistant
 
 An AI-powered Retrieval-Augmented Generation (RAG) chatbot built for answering technical AWS questions using 
@@ -27,6 +14,15 @@ most relevant documentation fragments and uses them as grounded context for resp
             "ec2", "ecs", "eks", "iam", "lambda", "rds", "s3",
             "sagemaker", "vpc", "xray" ]
 
+```
+
+
+## 1. Install Dependencies
+
+Make sure your virtual environment is active and install required packages:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Running Locally
@@ -100,16 +96,6 @@ This project is currently a proof of concept focused on validating:
 
 # Creating New Indexes
 
-## 1. Install Dependencies
-
-Make sure your virtual environment is active and install required packages:
-
-```bash
-pip install -r requirements.txt
-```
-
-Required packages include `faiss`, `sentence-transformers`, and `pymupdf` (for PDF ingestion).
-
 ## Ingest Data
 
 You can ingest documents into the RAG pipeline the ingestion scripts: `rag/ingest.py`
@@ -128,9 +114,4 @@ This process will:
 
 - `index/index.faiss` – FAISS vector index
 - `index/chunks.pkl` – Pickled text chunks
-
-## Local Testing
-
-After ingestion run the streamlit app using the following command.
-`streamlit run app.py`
 
