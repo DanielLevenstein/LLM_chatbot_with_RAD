@@ -33,7 +33,7 @@ To run the streamlit app run, install the dependencies and run the following com
 
 ```
 pip install -r requirements.txt
-streamlit run app.py```
+streamlit run app.py
 ```
 Or run through docker.
 ```
