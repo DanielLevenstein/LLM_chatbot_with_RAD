@@ -104,19 +104,18 @@ This project is currently a proof of concept focused on validating:
 
 # Creating New Indexes
 
-## Ingest Data
+## Extract Documentation from AWS
 
-You can ingest documents into the RAG pipeline the ingestion scripts: `rag/ingest.py`
-
-ingest.py can handle txt or pdf documents
+- Copy `config/features_default.json` to `config/features_current.json`
+- Run `extract.py` to extract documentation
+- Run `ingest.py` to create new indexes
 
 This process will:
 
-1. Read your document(s)
-2. Chunk the text into manageable pieces
-3. Generate embeddings using the SentenceTransformer model
-4. Build a FAISS index
-5. Save the chunks and index in the `index/` folder
+1. Scrapes AWS documentation for features listed in features_current.json
+2. Save raw file content to data directory. 
+3. Build a FAISS index from download data. 
+4. Save the chunks and index in the `index/` folder
 
 ### Output
 

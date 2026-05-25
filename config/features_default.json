@@ -1,0 +1,18 @@
+{
+    "apigateway": 1,
+    "cli": 2,
+    "cloudformation": 2,
+    "cloudwatch": 1,
+    "dynamodb": 1,
+    "elasticloadbalancing": 2,
+    "ec2": 1,
+    "ecs": 2,
+    "eks": 1,
+    "iam": 2,
+    "lambda": 1,
+    "rds": 1,
+    "s3": 1,
+    "sagemaker": 1,
+    "vpc": 2,
+    "xray": 1
+}

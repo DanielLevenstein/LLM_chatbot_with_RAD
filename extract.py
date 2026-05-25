@@ -1,31 +1,13 @@
 import glob
+import json
 import os
 import time
 import requests
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, urlunparse
 from collections import deque
-FEATURES = {
-    "apigateway": 1,
-    "cli": 2,
-    "cloudformation": 2,
-    "cloudwatch": 1,
-    "dynamodb": 1,
-    "elasticloadbalancing": 2,
-    "ec2": 1,
-    "ecs": 2,
-    "eks": 1,
-    "iam": 2,
-    "lambda": 1,
-    "rds": 1,
-    "s3": 1,
-    "sagemaker": 1,
-    "vpc": 2,
-    "xray": 1
-}
-
-feature_level_page_skip=False
-depth_level_page_skip=True
+feature_level_page_skip = False
 BASE_DOMAIN = "docs.aws.amazon.com"
 SCHEME = "https"
 
@@ -95,9 +77,6 @@ def crawl(start_url, feature_name, max_depth=2, max_pages=100, delay=0.5):
         if feature_level_page_skip and existing_files:
             print(f"Skipping {url} as files for {feature_name} already exist.")
             continue
-        if depth_level_page_skip and max_depth <= 1 and existing_files:
-            print(f"Skipping {feature_name} as its max depth is {max_depth}")
-            continue
         try:
             resp = requests.get(url, headers=HEADERS, timeout=15)
             if resp.status_code != 200:
@@ -137,10 +116,38 @@ def crawl(start_url, feature_name, max_depth=2, max_pages=100, delay=0.5):
            print(f"Error {url}: {e}")
     print(f"Downloading {downloaded} of {page_id} pages for {feature_name}")
 
+def write_to_json(features, filepath):
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(features, f, indent=4)
+
+def read_from_json(filepath):
+    try:
+        print(f"Reading {filepath}")
+        with open(filepath, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"File not found: {filepath}")
+        if filepath.endswith("current.json"):
+            return {"cli": 1}
+        else:
+            return {"cli": 0}
+
 
 def run():
-    for f in FEATURES:
-        crawl(f"{SCHEME}://{BASE_DOMAIN}/{f}", feature_name=f , max_depth=FEATURES.get(f), max_pages=80)
-
+    current_features = read_from_json("config/features_current.json")
+    write_to_json(current_features, "config/features_current.json")
+    previous_features = read_from_json("config/features_downloaded.json")
+    for f in current_features:
+        if f not in previous_features:
+            previous_features[f] = 0
+        if previous_features[f] < current_features[f]:
+            crawl(f"{SCHEME}://{BASE_DOMAIN}/{f}", feature_name=f , max_depth=current_features.get(f), max_pages=80)
+            previous_features[f] = current_features[f]
+            write_to_json(previous_features, "config/features_downloaded.json")
+        else :
+            print(f"Skipping {f} as it has not been updated.")
+    print(f"Finished AWS documentation for the following features:", current_features.keys())
+    print("If this is your first time running this script please update 'config/features_current.json' with the features you want to crawl.")
 if __name__ == "__main__":
     run()
+

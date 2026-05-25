@@ -1,3 +1,7 @@
+/config/features_current.json
+/config/features_downloaded.json
+/data/*.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
